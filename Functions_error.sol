@@ -1,29 +1,40 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.18;
+pragma solidity ^0.8.26;
 
-contract Auction {
-    // Check if the input amount meets the minimum bid requirement
-    function checkMinimumBid(uint _inputMoney) 
-        public pure returns (string memory) {
-        uint _minBid = 10000;
-        require(_inputMoney >= _minBid, "Amount did not reach the minimum bid");
-        return "Amount meets the minimum bid";
+contract ToyShop {
+    uint public balance;
+    
+    // Constructor to initialize balance to 0
+    constructor() {
+        balance = 0;
     }
-
-    // Validate if the user's bid exceeds the default bid
-    function validateHigherBid(uint _userBid) 
-        public pure returns (string memory) {
-        uint _defaultBid = 30000;
-        assert(_userBid > _defaultBid); 
-        return "Your bid is higher than the previous bidder";
-    }
-
-    // Check if the payment is sufficient compared to the account balance
-    function checkSufficientBalance(uint _payment) 
-        public pure {
-        uint _accountBalance = 50000;
-        if (_payment > _accountBalance) {
-            revert("Insufficient balance in account");
+    
+    // Function to buy a toy worth 500
+    function buyToy() public {
+        uint toyPrice = 500;
+        
+        // require() to check if the balance is sufficient
+        require(balance >= toyPrice, "Not enough funds to buy the toy.");
+        
+        balance -= toyPrice;
+    
+        // assert() to check that the balance should never be negative
+        assert(balance >= 0);
+        
+        // revert if the balance is zero after purchase
+        if (balance == 0) {
+            revert("Balance is zero after buying the toy. Please reload your account.");
         }
+    }
+    
+    // Function to view the current balance
+    function getBalance() public view returns (uint) {
+        return balance;
+    }
+
+    // Function to reload account
+    function depositAmount(uint amount) public {
+        require(amount > 0, "Deposit amount must be greater than 0.");
+        balance += amount;
     }
 }
